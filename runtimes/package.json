@@ -1,0 +1,6 @@
+{
+  "name":"agent-shared-resources-optional-runtimes",
+  "version":"0.1.0",
+  "private":true,
+  "dependencies":{"mcp-remote":"0.14.3","@upstash/context7-mcp":"4.4.1","@playwright/mcp":"0.0.83"}
+}

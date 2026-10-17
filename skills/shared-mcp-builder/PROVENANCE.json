@@ -1,0 +1,15 @@
+{
+  "upstream": "anthropics/skills",
+  "commit": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+  "path": "skills/mcp-builder",
+  "url": "https://github.com/anthropics/skills/tree/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/mcp-builder",
+  "license": "Apache-2.0",
+  "upstream_tree_sha256": "6ad1ef5937c9f484fe4dbd2106fd133ae41a8e54933272e88b34107a8a81a7bc",
+  "modified_on": "2026-10-14",
+  "modifications": [
+    "Namespaced skill name to preserve client-private skills",
+    "Removed named WebFetch dependency, fixed-count evaluations and mandatory paid Anthropic runner",
+    "Preferred minimal useful tools and stable protocol/SDK versions"
+  ],
+  "optional_scripts": "Not installed or executed automatically; inspect dependencies before use"
+}

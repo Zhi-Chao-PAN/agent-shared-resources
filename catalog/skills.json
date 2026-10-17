@@ -1,0 +1,44 @@
+{
+  "shared-frontend-design": {
+    "source": "skills/shared-frontend-design",
+    "origin": "https://github.com/anthropics/skills/tree/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/frontend-design",
+    "license": "Apache-2.0",
+    "modifications": [
+      "Namespaced skill name to preserve client-private skills",
+      "Removed fictional client history and unnecessary reconfirmation"
+    ],
+    "sha256": "79ca5a229e06a0ca01b8aa6b81084f14d60840478f34ca7f426c8d18267b4329"
+  },
+  "shared-security-best-practices": {
+    "source": "skills/shared-security-best-practices",
+    "origin": "https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/security-best-practices",
+    "license": "Apache-2.0",
+    "modifications": [
+      "Namespaced skill name to preserve client-private skills",
+      "Preserved explicit security trigger and existing authorization for fixes"
+    ],
+    "sha256": "46a0f837f4b077b94c81f792934a9e7803208087596241d615a2dc08d50c73cb"
+  },
+  "shared-mcp-builder": {
+    "source": "skills/shared-mcp-builder",
+    "origin": "https://github.com/anthropics/skills/tree/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/mcp-builder",
+    "license": "Apache-2.0",
+    "modifications": [
+      "Namespaced skill name to preserve client-private skills",
+      "Removed named WebFetch dependency, fixed-count evaluations and mandatory paid Anthropic runner",
+      "Preferred minimal useful tools and stable protocol/SDK versions"
+    ],
+    "sha256": "465e9fd6f80a918ec0732edf04ea12c2e219e5e5c6d45ce49c66fe80ad821413"
+  },
+  "shared-scientific-critical-thinking": {
+    "source": "skills/shared-scientific-critical-thinking",
+    "origin": "https://github.com/K-Dense-AI/scientific-agent-skills/tree/a1043ef544e3a100c28e70a736b6cf32554d0677/skills/scientific-critical-thinking",
+    "license": "MIT",
+    "modifications": [
+      "Namespaced skill name to preserve client-private skills",
+      "Removed restricted tool allowlist and optional paid diagram dependency",
+      "Added AI benchmark appraisal and removed automatic publication-citation insertion"
+    ],
+    "sha256": "64a1cbd0939271f5e3066ba66f20e92ef9cde04983c542c73a8b6d15831db363"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "shared-notion": {"service":"notion","source":"https://developers.notion.com/guides/mcp/get-started-with-mcp","endpoint":"https://mcp.notion.com/mcp","auth":"Each user's own official OAuth"},
+  "shared-linear": {"service":"linear","source":"https://linear.app/docs/mcp","endpoint":"https://mcp.linear.app/mcp","auth":"Each user's own official OAuth"},
+  "shared-context7": {"service":"context7","source":"https://github.com/upstash/context7","version":"4.4.1"},
+  "shared-exa": {"service":"exa","source":"https://exa.ai/docs/get-started/exa-mcp","endpoint":"https://mcp.exa.ai/mcp","note":"Anonymous quotas apply; no attempt to bypass limits"},
+  "shared-github": {"service":"github","source":"https://github.com/github/github-mcp-server","version":"2.0.2","auth":"Local gh account; token only in child process environment"},
+  "shared-playwright": {"service":"playwright","source":"https://github.com/microsoft/playwright-mcp","version":"0.0.83","note":"Optional isolated headless browser; keep native visible browsers for collaboration"},
+  "shared-serena": {"service":"serena","source":"https://github.com/oraios/serena","version":"2.0.0","note":"Opt-in project tooling; no automatic project activation or indexing"}
+}

@@ -1,0 +1,14 @@
+{
+  "upstream": "openai/skills",
+  "commit": "49f948faa9258a0c61caceaf225e179651397431",
+  "path": "skills/.curated/security-best-practices",
+  "url": "https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/security-best-practices",
+  "license": "Apache-2.0",
+  "upstream_tree_sha256": "1f2de7f255a8378e690d847a3413686a1533686206a565a53a899c41b46bb82e",
+  "modified_on": "2026-10-14",
+  "modifications": [
+    "Namespaced skill name to preserve client-private skills",
+    "Preserved explicit security trigger and existing authorization for fixes"
+  ],
+  "optional_scripts": "Not installed or executed automatically; inspect dependencies before use"
+}

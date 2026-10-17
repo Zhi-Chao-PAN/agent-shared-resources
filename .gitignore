@@ -1,0 +1,14 @@
+node_modules
+work
+inputs/
+outputs/
+.state/
+.mac-storage.json
+*.local.json
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+runtimes/node_modules/

@@ -1,0 +1,14 @@
+{
+  "upstream": "anthropics/skills",
+  "commit": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+  "path": "skills/frontend-design",
+  "url": "https://github.com/anthropics/skills/tree/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/frontend-design",
+  "license": "Apache-2.0",
+  "upstream_tree_sha256": "84a588f5621106e5c02b80dbadbad8b6addb6c40edbe9baff1a9db9d4ced9e06",
+  "modified_on": "2026-10-14",
+  "modifications": [
+    "Namespaced skill name to preserve client-private skills",
+    "Removed fictional client history and unnecessary reconfirmation"
+  ],
+  "optional_scripts": "Not installed or executed automatically; inspect dependencies before use"
+}

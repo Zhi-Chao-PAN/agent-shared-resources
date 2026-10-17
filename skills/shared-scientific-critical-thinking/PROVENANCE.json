@@ -1,0 +1,15 @@
+{
+  "upstream": "K-Dense-AI/scientific-agent-skills",
+  "commit": "a1043ef544e3a100c28e70a736b6cf32554d0677",
+  "path": "skills/scientific-critical-thinking",
+  "url": "https://github.com/K-Dense-AI/scientific-agent-skills/tree/a1043ef544e3a100c28e70a736b6cf32554d0677/skills/scientific-critical-thinking",
+  "license": "MIT",
+  "upstream_tree_sha256": "e96f9093fd516c2e56f19c1352e8a0dd5b7f3c700f045296ef1057c06309ad0c",
+  "modified_on": "2026-10-14",
+  "modifications": [
+    "Namespaced skill name to preserve client-private skills",
+    "Removed restricted tool allowlist and optional paid diagram dependency",
+    "Added AI benchmark appraisal and removed automatic publication-citation insertion"
+  ],
+  "optional_scripts": "Not installed or executed automatically; inspect dependencies before use"
+}

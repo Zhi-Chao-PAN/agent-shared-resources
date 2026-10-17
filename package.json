@@ -1,0 +1,16 @@
+{
+  "name": "agent-shared-resources",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Portable, opt-in Skills and MCP publication for local desktop agents",
+  "license": "MIT",
+  "type": "module",
+  "engines": {"node": ">=22"},
+  "bin": {"ars": "bin/ars.mjs"},
+  "scripts": {
+    "test": "node --test",
+    "check:publication": "node scripts/check-publication.mjs",
+    "check": "npm test && npm run check:publication"
+  },
+  "dependencies": {"jsonc-parser": "3.3.1", "smol-toml": "1.9.0", "js-yaml": "5.4.2"}
+}

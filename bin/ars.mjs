@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import {fileURLToPath} from 'node:url';
+import {Manager,CONFIG,nameOK} from '../src/manager.mjs';
+import {CLIENTS} from '../src/clients.mjs';
+import {atomic} from '../src/files.mjs';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const [command='help',...args]=process.argv.slice(2),flags={};
+try {
+  for(let i=0;i<args.length;i+=2) {
+    if(!['--client','--resource','--skills','--mcp','--home'].includes(args[i])||args[i+1]===undefined)throw new Error('Invalid flag/value');
+    if(Object.hasOwn(flags,args[i]))throw new Error('Duplicate flag');flags[args[i]]=args[i+1];
+  }
+  if(flags['--client']&&!CLIENTS[flags['--client']])throw new Error('Unknown client');
+  const file=path.join(root,CONFIG),client=flags['--client'];
+  if(command==='help'||command==='--help') {
+    console.log('agent-shared-resources\n\nnode bin/ars.mjs init\nnode bin/ars.mjs select --client qoder-cn --skills shared-scientific-critical-thinking --mcp shared-context7\nnode bin/ars.mjs plan|apply|doctor --client <client> [--resource <name>]\nnode bin/ars.mjs rollback --client <client> [--resource <name>]\nnode bin/ars.mjs recover\nnode bin/ars.mjs clients\n\ninit/select edit only the ignored local manifest. apply/rollback change native files.\nNo automatic account login, approval changes, global rules, or MCP execution.');
+  } else if(command==='clients')console.log(JSON.stringify(CLIENTS,null,2));
+  else if(command==='init') {
+    const config={version:1,clients:{},skills:{},servers:{},runtime:{}};
+    atomic(file,JSON.stringify(config,null,2)+'\n',null);console.log(JSON.stringify({ok:true,path:file,enabledClients:0}));
+  } else if(command==='select') {
+    if(!client)throw new Error('select requires --client');
+    const before=fs.readFileSync(file,'utf8'),config=JSON.parse(before),existing=config.clients[client]??{skills:[],mcp:[]};
+    for(const [flag,key] of [['--skills','skills'],['--mcp','mcp']])if(flags[flag]!==undefined) {
+      const value=flags[flag]==='-'?[]:flags[flag].split(',');
+      if(value.some(x=>!nameOK(x))||new Set(value).size!==value.length)throw new Error('Invalid resource names');
+      existing[key]=value;
+    }
+    config.clients[client]=existing;
+    // Validate selections without publishing or invoking any runtime.
+    const previous=before;atomic(file,JSON.stringify(config,null,2)+'\n',before);
+    try{new Manager({root,home:flags['--home']??os.homedir()}).plan({client});}
+    catch(error){atomic(file,previous,fs.readFileSync(file,'utf8'));throw error;}
+    console.log(JSON.stringify({ok:true,client,selection:existing,nativeFilesChanged:false}));
+  } else {
+    if(!['plan','apply','doctor','rollback','recover'].includes(command))throw new Error('Unknown command');
+    if(command==='rollback'&&!client)throw new Error('rollback requires --client to avoid blanket removal');
+    if(['--skills','--mcp'].some(k=>flags[k]!==undefined))throw new Error('Use select to change resource lists');
+    if(flags['--resource']&&!nameOK(flags['--resource']))throw new Error('Invalid resource filter');
+    const manager=new Manager({root,home:flags['--home']??os.homedir()});
+    const result=manager[command]({client,resource:flags['--resource']});
+    console.log(JSON.stringify(result,null,2));if(!result.ok)process.exitCode=1;
+  }
+} catch(error) {console.error(JSON.stringify({ok:false,error:error.message}));process.exitCode=1;}
