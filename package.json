@@ -2,11 +2,31 @@
   "name": "agent-shared-resources",
   "version": "0.1.0",
   "private": true,
-  "description": "Portable, opt-in Skills and MCP publication for local desktop agents",
+  "description": "One reviewed Skills and MCP library, published per AI coding agent without overwriting native settings.",
   "license": "MIT",
   "type": "module",
   "engines": {"node": ">=22"},
   "bin": {"ars": "bin/ars.mjs"},
+  "keywords": [
+    "ai-agents",
+    "claude-code",
+    "codex",
+    "gemini-cli",
+    "qoder",
+    "mcp",
+    "skills",
+    "developer-tools",
+    "dotfiles",
+    "macos",
+    "windows",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zhi-Chao-PAN/agent-shared-resources.git"
+  },
+  "homepage": "https://github.com/Zhi-Chao-PAN/agent-shared-resources#readme",
+  "bugs": {"url": "https://github.com/Zhi-Chao-PAN/agent-shared-resources/issues"},
   "scripts": {
     "test": "node --test",
     "check:publication": "node scripts/check-publication.mjs",

@@ -3,6 +3,7 @@ import path from 'node:path';
 // Defaults from the reference Mac installation. Windows defaults are provided
 // only for documented home-relative formats; other paths require an override.
 export const CLIENTS = {
+  claude: {kind:'json', mcp:'.claude.json', skills:'.claude/skills', windows:true},
   codex: {kind:'toml', mcp:'.codex/config.toml', skills:'.codex/skills', windows:true},
   'qoder-cn': {kind:'json', mcp:'.qoder-cn/settings.json', skills:'.qoder-cn/skills', windows:true},
   qoder: {kind:'json', mcp:'.qoder/settings.json', skills:'.qoder/skills', windows:true},

@@ -1,0 +1,55 @@
+name: Client compatibility report
+description: Report whether a desktop agent actually discovered a Skill or called an MCP tool.
+title: "[compat] <client> <version> on <OS>"
+labels: ["compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        `doctor` only checks files. Real discovery and tool calls need a native client check. A useful report includes the client version, what you selected, and a **sanitized** result. Never include tokens, account ids, full settings, or chat transcripts.
+  - type: input
+    id: client
+    attributes:
+      label: Client and version
+      placeholder: Claude Code 2.x / Codex CLI x.y / Qoder CN x.y
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and architecture
+      placeholder: macOS 15 arm64
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: What did you test?
+      multiple: true
+      options:
+        - Skill discovered in a new task
+        - Skill body actually loaded
+        - MCP server visible in settings
+        - One minimal read-only MCP tool call
+        - Rollback removed only this tool's entry
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Sanitized result
+      description: Include the path form (`~/...`), resource names, and the visible tool name. Redact account and machine identifiers.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Version-specific caveats
+      description: New config locations, duplicate discovery, approval prompts, or Windows path differences.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checklist
+      options:
+        - label: This report contains no credentials, tokens, account ids, or full native config files.
+          required: true

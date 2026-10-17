@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {tree} from '../src/files.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const topFiles=new Set(['README.md','LICENSE','THIRD_PARTY_NOTICES.md','CONTRIBUTING.md','SECURITY.md','package.json','package-lock.json','.gitignore','.gitattributes']);
+const topFiles=new Set(['README.md','README.zh-CN.md','CHANGELOG.md','LICENSE','THIRD_PARTY_NOTICES.md','CONTRIBUTING.md','SECURITY.md','package.json','package-lock.json','.gitignore','.gitattributes']);
 const dirs=new Set(['src','bin','scripts','tests','docs','catalog','examples','skills','runtimes','.github']);
 const forbidden=/(^|\/)(node_modules|\.state|\.auth|logs|projects|work|inputs|outputs|backups)(\/|$)|\.local\.json$|(^|\/)\.env(?:$|\.)|\.mac-storage\.json$/;
 const patterns=[

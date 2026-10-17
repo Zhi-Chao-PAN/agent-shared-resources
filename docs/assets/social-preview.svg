@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Shared Resources — one Skills and MCP library, published per agent</title>
+  <desc id="desc">Dark social preview with the project title, a short description, platform chips, and a terminal showing select, plan, apply, and doctor.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070a14"/>
+      <stop offset="0.6" stop-color="#0b1120"/>
+      <stop offset="1" stop-color="#101a33"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#79c0ff"/>
+      <stop offset="1" stop-color="#d2a8ff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#1f6feb" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#1f6feb" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#8957e5" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#8957e5" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="card-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1180" cy="60" r="360" fill="url(#glow)"/>
+  <circle cx="800" cy="640" r="320" fill="url(#glow2)"/>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">
+    <text x="80" y="108" font-size="15" font-weight="700" letter-spacing="3" fill="#7ee787">OPEN SOURCE · MIT</text>
+    <text x="80" y="212" font-size="64" font-weight="800" fill="#f0f6fc">Agent Shared</text>
+    <text x="80" y="284" font-size="64" font-weight="800" fill="url(#titleGrad)">Resources</text>
+
+    <text x="80" y="354" font-size="21" fill="#a7b1c2">One reviewed library of Skills and MCP servers,</text>
+    <text x="80" y="386" font-size="21" fill="#a7b1c2">published per agent — without overwriting the</text>
+    <text x="80" y="418" font-size="21" fill="#a7b1c2">models, plugins, and approvals that make it yours.</text>
+
+    <g font-size="15" fill="#c9d4e5">
+      <rect x="80" y="470" width="96" height="42" rx="21" fill="#16203a" stroke="#2b3654"/>
+      <text x="128" y="497" text-anchor="middle">macOS</text>
+      <rect x="188" y="470" width="112" height="42" rx="21" fill="#16203a" stroke="#2b3654"/>
+      <text x="244" y="497" text-anchor="middle">Windows</text>
+      <rect x="312" y="470" width="92" height="42" rx="21" fill="#16203a" stroke="#2b3654"/>
+      <text x="358" y="497" text-anchor="middle">Linux</text>
+      <rect x="416" y="470" width="116" height="42" rx="21" fill="#16203a" stroke="#2b3654"/>
+      <text x="474" y="497" text-anchor="middle">11 clients</text>
+    </g>
+
+    <text x="80" y="600" font-size="19" fill="#6e7681">github.com/Zhi-Chao-PAN/agent-shared-resources</text>
+  </g>
+
+  <g filter="url(#card-shadow)">
+    <rect x="780" y="96" width="440" height="448" rx="16" fill="#0c1324" stroke="#2b3654"/>
+    <path d="M780 136h440" stroke="#232c45"/>
+    <circle cx="806" cy="116" r="5" fill="#ff5f56"/>
+    <circle cx="824" cy="116" r="5" fill="#ffbd2e"/>
+    <circle cx="842" cy="116" r="5" fill="#27c93f"/>
+    <text x="1000" y="121" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="12" fill="#7d869c">claude · plan → apply → doctor</text>
+  </g>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" xml:space="preserve">
+    <text x="806" y="176" fill="#7ee787">$ <tspan fill="#e6edf3">ars select --client claude</tspan></text>
+    <text x="806" y="228" fill="#7ee787">$ <tspan fill="#e6edf3">ars plan --client claude</tspan></text>
+    <text x="806" y="254" fill="#8b949e">{</text>
+    <text x="806" y="280" fill="#8b949e">  <tspan fill="#79c0ff">"ok"</tspan>: <tspan fill="#ffa657">true</tspan>, <tspan fill="#79c0ff">"changes"</tspan>: <tspan fill="#ffa657">2</tspan>,</text>
+    <text x="806" y="306" fill="#8b949e">  <tspan fill="#79c0ff">"actions"</tspan>: [<tspan fill="#a5d6ff">"add"</tspan>, <tspan fill="#a5d6ff">"copy"</tspan>]</text>
+    <text x="806" y="332" fill="#8b949e">}</text>
+
+    <text x="806" y="384" fill="#7ee787">$ <tspan fill="#e6edf3">ars apply --client claude</tspan></text>
+    <text x="806" y="410" fill="#8b949e">{"ok": true, "changes": 2}</text>
+
+    <text x="806" y="462" fill="#7ee787">$ <tspan fill="#e6edf3">ars doctor --client claude</tspan></text>
+    <text x="806" y="488" fill="#8b949e">{"ok": true, "changes": 0}</text>
+
+    <text x="806" y="522" fill="#7ee787">✓ <tspan fill="#8b949e">only owned entries touched</tspan></text>
+  </g>
+</svg>

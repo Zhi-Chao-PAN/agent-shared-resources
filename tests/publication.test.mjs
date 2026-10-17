@@ -72,6 +72,20 @@ test('Windows unknown layouts require explicit native paths',t=>{
 test('documented Windows home defaults are exercised without requiring symlink privileges',t=>{
   const f=fixture(t,'qoder-cn','win32');assert.equal(f.m().apply().ok,true);assert.equal(fs.lstatSync(f.target).isSymbolicLink(),false);assert.equal(f.m().doctor().ok,true);
 });
+test('Claude Code uses user scope and preserves unrelated state in ~/.claude.json',t=>{
+  const f=fixture(t,'claude');assert.equal(f.file,path.join(f.home,'.claude.json'));assert.equal(f.target,path.join(f.home,'.claude/skills/demo-skill'));
+  assert.equal(f.m().apply().ok,true);assert.equal(f.m().doctor().ok,true);
+  const published=fs.readFileSync(f.file,'utf8');assert(published.includes('keep-private'));assert(published.includes('sandbox'));assert(published.includes('shared-context7'));assert(published.includes('private comment'));
+});
+test('a resource filter rolls a resource back across clients without touching other resources',t=>{
+  const f=fixture(t);f.cfg.clients.codex={skills:['demo-skill'],mcp:[]};f.save();
+  const codexFile=path.join(f.home,'.codex/config.toml');fs.mkdirSync(path.dirname(codexFile),{recursive:true});fs.writeFileSync(codexFile,'model="keep-private"\n');
+  const m=f.m();assert.equal(m.apply().ok,true);
+  assert.equal(m.rollback({resource:'demo-skill'}).ok,true);
+  assert(!fs.existsSync(f.target));assert(!fs.existsSync(path.join(f.home,'.codex/skills/demo-skill')));
+  assert(fs.readFileSync(codexFile,'utf8').includes('keep-private'));
+  assert(fs.readFileSync(f.file,'utf8').includes('shared-context7'));
+});
 test('Qoder per-name visibility changes preserve its account, MCP and permission settings',t=>{
   const f=fixture(t);f.cfg.clients['qoder-cn'].hiddenSkills=['retired-skill'];f.save();const m=f.m();m.apply();
   assert(fs.readFileSync(f.file,'utf8').includes('"off"'));m.rollback({client:'qoder-cn',resource:'hide-retired-skill'});

@@ -8,6 +8,7 @@ import {CLIENTS} from '../src/clients.mjs';
 import {atomic} from '../src/files.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
 const [command='help',...args]=process.argv.slice(2),flags={};
 try {
   for(let i=0;i<args.length;i+=2) {
@@ -17,9 +18,31 @@ try {
   if(flags['--client']&&!CLIENTS[flags['--client']])throw new Error('Unknown client');
   const file=path.join(root,CONFIG),client=flags['--client'];
   if(command==='help'||command==='--help') {
-    console.log('agent-shared-resources\n\nnode bin/ars.mjs init\nnode bin/ars.mjs select --client qoder-cn --skills shared-scientific-critical-thinking --mcp shared-context7\nnode bin/ars.mjs plan|apply|doctor --client <client> [--resource <name>]\nnode bin/ars.mjs rollback --client <client> [--resource <name>]\nnode bin/ars.mjs recover\nnode bin/ars.mjs clients\n\ninit/select edit only the ignored local manifest. apply/rollback change native files.\nNo automatic account login, approval changes, global rules, or MCP execution.');
-  } else if(command==='clients')console.log(JSON.stringify(CLIENTS,null,2));
-  else if(command==='init') {
+    console.log(`agent-shared-resources ${pkg.version}
+
+node bin/ars.mjs init
+node bin/ars.mjs resources
+node bin/ars.mjs select --client <id> [--skills a,b|-] [--mcp c,d|-]
+node bin/ars.mjs plan|apply|doctor --client <id> [--resource <name>]
+node bin/ars.mjs rollback --client <id> [--resource <name>]
+node bin/ars.mjs rollback --resource <name>
+node bin/ars.mjs recover
+node bin/ars.mjs clients
+
+init/select edit only the ignored local manifest. apply/rollback change native files.
+No automatic account login, approval changes, global rules, or MCP execution.`);
+  } else if(command==='--version'||command==='version')console.log(pkg.version);
+  else if(command==='clients')console.log(JSON.stringify(CLIENTS,null,2));
+  else if(command==='resources') {
+    const skills=JSON.parse(fs.readFileSync(path.join(root,'catalog/skills.json'),'utf8'));
+    const servers=JSON.parse(fs.readFileSync(path.join(root,'catalog/mcp.json'),'utf8'));
+    const rows=Object.entries(skills).map(([name,spec])=>{
+      const text=fs.readFileSync(path.join(root,spec.source,'SKILL.md'),'utf8');
+      const description=(text.match(/^description:\s*(.+)$/m)?.[1]??'').trim().replace(/^["']|["']$/g,'');
+      return {name,description,license:spec.license,origin:spec.origin};
+    });
+    console.log(JSON.stringify({ok:true,skills:rows,mcp:Object.entries(servers).map(([name,spec])=>({name,...spec}))},null,2));
+  } else if(command==='init') {
     const config={version:1,clients:{},skills:{},servers:{},runtime:{}};
     atomic(file,JSON.stringify(config,null,2)+'\n',null);console.log(JSON.stringify({ok:true,path:file,enabledClients:0}));
   } else if(command==='select') {
@@ -38,7 +61,7 @@ try {
     console.log(JSON.stringify({ok:true,client,selection:existing,nativeFilesChanged:false}));
   } else {
     if(!['plan','apply','doctor','rollback','recover'].includes(command))throw new Error('Unknown command');
-    if(command==='rollback'&&!client)throw new Error('rollback requires --client to avoid blanket removal');
+    if(command==='rollback'&&!client&&!flags['--resource'])throw new Error('rollback requires --client or --resource to avoid blanket removal');
     if(['--skills','--mcp'].some(k=>flags[k]!==undefined))throw new Error('Use select to change resource lists');
     if(flags['--resource']&&!nameOK(flags['--resource']))throw new Error('Invalid resource filter');
     const manager=new Manager({root,home:flags['--home']??os.homedir()});

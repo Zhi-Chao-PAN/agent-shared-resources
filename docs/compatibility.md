@@ -4,6 +4,7 @@
 
 | 客户端 id | Mac MCP 默认入口 | Skill 默认入口 | Windows 默认路径 |
 |---|---|---|---|
+| `claude` | `~/.claude.json` 的顶层 `mcpServers` | `~/.claude/skills` | home 相对入口，按 Claude Code 官方文档 |
 | `codex` | `~/.codex/config.toml` | `~/.codex/skills` | home 相对入口，需按客户端版本确认 |
 | `qoder-cn` | `~/.qoder-cn/settings.json` | `~/.qoder-cn/skills` | 同上；CN 与国际版分开 |
 | `qoder` | `~/.qoder/settings.json` | `~/.qoder/skills` | home 相对入口 |
@@ -16,6 +17,8 @@
 | `zcode` | `~/.zcode/cli/config.json` 的 `mcp.servers` | 无默认 | 要求明确覆盖 |
 
 没有证据证明 Windows 某个客户端实际读取哪个文件时，工具会拒绝套用 Mac 路径。请在该客户端的原生设置中确认路径，然后写入自己的 `agent-resources.local.json`。不会自动改 skill-filesystem、MiniMax 外部源、账号或授权设置。
+
+Claude Code 只发布**用户级**配置：`~/.claude.json` 顶层的 `mcpServers` 与 `~/.claude/skills`。项目级 `.mcp.json`、项目内 `.claude/settings.local.json` 和权限规则不会被读取或改写；若你使用 `claude mcp add` 的 project / local scope，二者互不影响。`~/.claude.json` 还保存会话等私有状态，工具按目标键编辑并保留其余内容。
 
 ## Qoder 的公共目录发现
 
@@ -40,4 +43,4 @@ Codex、MiniMax 等也可能从多处发现同名 Skill。本工具不会扫描�
 - [Gemini CLI Skills](https://geminicli.com/docs/cli/skills/)
 - [Codex 配置](https://developers.openai.com/codex/config-basic/)
 
-路径与发现行为会随版本变化；新增适配器应先补文件保留/回滚用例，再提供真实客户端的脱敏证据。Claude 不在首版适配清单内。
+路径与发现行为会随版本变化；新增适配器应先补文件保留/回滚用例，再提供真实客户端的脱敏证据。

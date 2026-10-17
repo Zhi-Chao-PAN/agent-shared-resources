@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Shared Resources terminal demo</title>
+  <desc id="desc">A terminal shows selecting Claude Code, planning two file changes, applying them, and doctor reporting zero changes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#121a30"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1f6feb" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#8957e5" stop-opacity="0.08"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="660" fill="#070a14"/>
+  <circle cx="1080" cy="80" r="280" fill="url(#glow)"/>
+  <circle cx="120" cy="620" r="240" fill="#1f6feb" opacity="0.06"/>
+
+  <rect x="32" y="28" width="1136" height="604" rx="18" fill="url(#bg)" stroke="#2b3654" filter="url(#shadow)"/>
+  <path d="M32 78h1136" stroke="#232c45"/>
+  <circle cx="62" cy="54" r="6" fill="#ff5f56"/>
+  <circle cx="84" cy="54" r="6" fill="#ffbd2e"/>
+  <circle cx="106" cy="54" r="6" fill="#27c93f"/>
+  <text x="600" y="59" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#7d869c">agent-shared-resources · claude</text>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15" xml:space="preserve">
+    <text x="64" y="118" fill="#7ee787">$ <tspan fill="#e6edf3">node bin/ars.mjs select --client claude \</tspan></text>
+    <text x="64" y="143" fill="#e6edf3">    --skills <tspan fill="#d2a8ff">shared-scientific-critical-thinking</tspan> --mcp <tspan fill="#d2a8ff">shared-context7</tspan></text>
+    <text x="64" y="168" fill="#7ee787">✓ <tspan fill="#8b949e">claude selected · manifest only · 0 native files changed</tspan></text>
+
+    <text x="64" y="210" fill="#7ee787">$ <tspan fill="#e6edf3">node bin/ars.mjs plan --client claude</tspan></text>
+    <text x="64" y="235" fill="#8b949e">{</text>
+    <text x="64" y="260" fill="#8b949e">  <tspan fill="#79c0ff">"ok"</tspan>: <tspan fill="#ffa657">true</tspan>, <tspan fill="#79c0ff">"changes"</tspan>: <tspan fill="#ffa657">2</tspan>,</text>
+    <text x="64" y="285" fill="#8b949e">  <tspan fill="#79c0ff">"entries"</tspan>: [</text>
+    <text x="64" y="310" fill="#8b949e">    {<tspan fill="#79c0ff">"client"</tspan>: <tspan fill="#a5d6ff">"claude"</tspan>, <tspan fill="#79c0ff">"resource"</tspan>: <tspan fill="#a5d6ff">"shared-context7"</tspan>, <tspan fill="#79c0ff">"action"</tspan>: <tspan fill="#a5d6ff">"add"</tspan>},</text>
+    <text x="64" y="335" fill="#8b949e">    {<tspan fill="#79c0ff">"client"</tspan>: <tspan fill="#a5d6ff">"claude"</tspan>, <tspan fill="#79c0ff">"resource"</tspan>: <tspan fill="#a5d6ff">"shared-scientific-critical-thinking"</tspan>, <tspan fill="#79c0ff">"action"</tspan>: <tspan fill="#a5d6ff">"copy"</tspan>}</text>
+    <text x="64" y="360" fill="#8b949e">  ],</text>
+    <text x="64" y="385" fill="#8b949e">  <tspan fill="#79c0ff">"scope"</tspan>: <tspan fill="#a5d6ff">"Files only; no server, account or model calls"</tspan></text>
+    <text x="64" y="410" fill="#8b949e">}</text>
+
+    <text x="64" y="452" fill="#7ee787">$ <tspan fill="#e6edf3">node bin/ars.mjs apply --client claude</tspan></text>
+    <text x="64" y="477" fill="#8b949e">{"ok":true,"changes":2,"backups":"~/.agent-shared-resources/backups"}</text>
+
+    <text x="64" y="519" fill="#7ee787">$ <tspan fill="#e6edf3">node bin/ars.mjs doctor --client claude</tspan></text>
+    <text x="64" y="544" fill="#8b949e">{"ok":true,"changes":0,"scope":"File contents and native declarations only"}</text>
+  </g>
+
+  <path d="M64 578h1072" stroke="#232c45"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="14" fill="#6e7681">
+    <text x="64" y="608">One manifest · eleven clients · macOS / Windows / Linux</text>
+    <text x="1136" y="608" text-anchor="end" fill="#8b949e">MIT · no account login</text>
+  </g>
+</svg>

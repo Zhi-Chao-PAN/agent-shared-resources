@@ -1,0 +1,66 @@
+name: Bug report
+description: A command failed, published files were wrong, or rollback was refused.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not paste tokens, account data, full native configs, chat logs, or `~/.agent-shared-resources/` receipts.** Redact paths and identifiers before posting.
+  - type: input
+    id: os
+    attributes:
+      label: OS and architecture
+      placeholder: macOS 15 arm64 / Windows 11 x64 / Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: v22.14.0
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client id and version
+      placeholder: claude / codex / qoder-cn + client version
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command that failed
+      placeholder: node bin/ars.mjs apply --client claude
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and sanitized output
+      description: Paste the error JSON and the smallest redacted excerpt needed to reproduce it.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Sanitized `doctor` output
+      description: Replace usernames and private resource names with placeholders.
+      render: json
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checklist
+      options:
+        - label: I removed credentials, account identifiers, full config files, and local paths I do not want public.
+          required: true
+        - label: I did not run `apply` against a real home directory in a script or CI reproduction.
+          required: true

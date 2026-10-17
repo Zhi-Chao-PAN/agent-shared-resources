@@ -2,7 +2,7 @@
 
 ## 本仓库
 
-- 核心测试覆盖十种客户端文件适配、私有配置保留、同名冲突、幂等、资源回滚、中断恢复、并发编辑、JSON 重复键、symlink/junction 保护和回执路径检查。
+- 核心测试覆盖十一种客户端文件适配、私有配置保留、同名冲突、幂等、资源回滚、中断恢复、并发编辑、JSON 重复键、symlink/junction 保护和回执路径检查。
 - CI 在 macOS、Windows、Linux 与 Node 22/24 组合执行。以[当前 CI 结果](https://github.com/Zhi-Chao-PAN/agent-shared-resources/actions/workflows/ci.yml)为准。
 - 安装器不实际执行 MCP，也不申请账号授权。CI 不运行官方登录、浏览器和语言服务器，不访问个人业务数据。
 - `doctor` 是文件与声明验收；客户端路径正确、技能可见性和工具调用需分别核对。

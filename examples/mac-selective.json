@@ -1,6 +1,7 @@
 {
   "version": 1,
   "clients": {
+    "claude": {"skills":["shared-frontend-design"],"mcp":[]},
     "codex": {"skills":["shared-frontend-design"],"mcp":[]},
     "qoder-cn": {"skills":["shared-scientific-critical-thinking"],"mcp":["shared-context7"]},
     "trae-cn": {"skills":["shared-scientific-critical-thinking"],"mcp":["shared-context7"]}

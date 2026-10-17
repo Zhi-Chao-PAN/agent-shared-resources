@@ -1,95 +1,189 @@
 # Agent Shared Resources
 
+**One reviewed library of Skills and MCP servers — published per agent, without overwriting what makes each client yours.**
+
 [![CI](https://github.com/Zhi-Chao-PAN/agent-shared-resources/actions/workflows/ci.yml/badge.svg)](https://github.com/Zhi-Chao-PAN/agent-shared-resources/actions/workflows/ci.yml)
-[English overview](docs/README.en.md) · [平台与客户端](docs/compatibility.md) · [MCP 与授权](docs/mcp.md) · [架构与恢复](docs/design.md)
+[![Node.js 22+](https://img.shields.io/badge/node-%E2%89%A522-3c873a)](https://nodejs.org)
+[![macOS | Windows | Linux](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)](#supported-clients)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-给同一台电脑上的多个 Agent 共用一份 Skills / MCP 资源清单，按客户端选择发布，保留各自的模型、插件和确认规则。
+English · [简体中文](README.zh-CN.md)
 
-这是从一套实际使用过的 Mac 共享资源系统整理出的**独立、脱敏的开源实现**。使用 Node.js 22+，提供 macOS / Windows 的同一套 CLI。CI 测试文件适配与恢复机制；客户端里的真实模型调用、OAuth、浏览器和语言服务器仍需在你的机器上验收，不能用 CI 代替。
+![Terminal demo: select, plan, apply, doctor](docs/assets/demo.svg)
 
-## 它做什么
+The demo also publishes the optional Context7 MCP. The quick start below begins with one Skill and no runtime download.
 
-- 一份技能源库，按客户端复制发布；Windows 不依赖管理员权限、符号链接或修改执行策略。
-- MCP 只增删选中的独立条目，保留原配置、注释、模型、权限和其他服务器。
-- `plan` 预览，`apply` 发布，`doctor` 检查文件，按客户端 / 资源 `rollback`。
-- 同名不同内容直接拒绝覆盖；相同的既有资源不被认领，回滚也不会删除它们。
-- 写入前记录事务，崩溃后可显式 `recover`；有并发修改就停止，避免整份配置回写。
-- 默认不启用任何客户端，不登录账号，不改全局 Agent 指令，不部署验收 probe。
+If you use Claude Code, Codex, Gemini CLI, Qoder, Trae CN, or another coding agent on the same machine, you have probably copied the same Skill into several folders and hand-merged one more MCP server into JSON, TOML, or YAML. Then a client update moved a file, a symlink broke on Windows, or a copy script replaced a setting you needed.
 
-它不做账号共享服务、不同步聊天与记忆，也不保证模型每次都选某个工具。原生连接已经满足需求时，可以不加同类 MCP。Trae 等客户端继续使用自己的可见浏览器；Playwright 只是按需启用的隔离测试工具。
+This tool keeps **one reviewed source library** and publishes only the resources you select to each client's native location. It edits the target entry instead of replacing the whole config. Nothing is enabled by default.
+
+## What it does
+
+- **One library, many agents.** Select Skills and MCP servers per client from a single local manifest.
+- **Surgical config edits.** JSON/JSONC keeps comments and unrelated keys; TOML/YAML gets a named, removable block. Your model, plugins, permissions, and private servers stay untouched.
+- **Preview before writing.** `plan` is read-only. `apply` publishes. `doctor` verifies the files match the manifest.
+- **Refuse rather than clobber.** A same-named entry with different content stops the whole publish; an identical pre-existing resource is left unowned.
+- **Explicit rollback.** Receipts record only what this tool created, so rollback removes only unchanged, owned entries. Later private edits are preserved.
+- **Crash-safe updates.** A prepared transaction is saved before writes; an interrupted run requires an explicit `recover`.
+- **Cross-platform by design.** Copy-based publication needs no administrator rights, symlinks, or PowerShell execution-policy changes on Windows.
+- **No hidden account or approval changes.** No automatic login, no global Agent instructions, no approval-rule edits, no model calls.
 
 ```mermaid
 flowchart LR
-  A[本地资源清单] --> B[预览与冲突检查]
-  C[Skills 源目录] --> B
-  B --> D[各客户端原生入口]
-  D --> E[各端原有模型与确认规则]
-  D --> F[独立 stdio MCP 子进程]
-  F --> G[当前用户自己的官方账号]
+  A[Reviewed Skills] --> B[Local manifest]
+  C[MCP catalog] --> B
+  B --> D[Read-only plan]
+  D --> E[Per-client native entries]
+  E --> F[Each client's own model, plugins and approvals]
+  E --> G[stdio MCP child process]
+  G --> H[Your own official account]
 ```
 
-## 快速开始
+## Why not symlinks, dotfiles, or a copy script?
 
-先安装 [Node.js 22+](https://nodejs.org/en/download) 和 Git。以下操作在克隆目录执行。
+| Approach | Where it usually hurts | What this tool does instead |
+|---|---|---|
+| Symlink / junction | Windows privileges and permission differences; a broken link can make the client silently see nothing | Copies a complete Skill directory and verifies its content hash |
+| Dotfiles / whole-file templates | Replaces the client's account, model, plugin, and permission state with someone else's file | Edits only the selected key or marked block and checks that everything else is semantically unchanged |
+| Ad-hoc copy script | No conflict detection, no receipt, no safe rollback, and a half-finished run leaves mixed state | Plans the whole change set, refuses conflicts, writes transactionally, and rolls back by receipt |
+| Manually editing every client | Drift between agents and no record of what was installed | One manifest, deterministic output per client, and `doctor` to detect drift |
 
-macOS：
+Symlinks and dotfiles are still good tools. They are a poor fit when a client stores both shared resources and private state in the same file. See [the longer comparison](docs/comparison.md) for when each option is the better choice.
+
+## Quick start
+
+Requires [Node.js 22+](https://nodejs.org/en/download) and Git. Run these commands inside the checkout. Optional: run `npm link` once to use `ars` instead of `node bin/ars.mjs`.
+
+macOS / Linux:
 
 ```sh
 git clone https://github.com/Zhi-Chao-PAN/agent-shared-resources.git
 cd agent-shared-resources
 npm ci --ignore-scripts
 node bin/ars.mjs init
-node bin/ars.mjs select --client qoder-cn --skills shared-scientific-critical-thinking --mcp -
-node bin/ars.mjs plan --client qoder-cn
-node bin/ars.mjs apply --client qoder-cn
-node bin/ars.mjs doctor --client qoder-cn
+node bin/ars.mjs resources
+node bin/ars.mjs select --client claude --skills shared-scientific-critical-thinking --mcp -
+node bin/ars.mjs plan --client claude
+node bin/ars.mjs apply --client claude
+node bin/ars.mjs doctor --client claude
 ```
 
-Windows PowerShell：
+Windows PowerShell:
 
 ```powershell
 git clone https://github.com/Zhi-Chao-PAN/agent-shared-resources.git
 cd agent-shared-resources
 npm.cmd ci --ignore-scripts
 node bin/ars.mjs init
-node bin/ars.mjs select --client qoder-cn --skills shared-scientific-critical-thinking --mcp -
-node bin/ars.mjs plan --client qoder-cn
-node bin/ars.mjs apply --client qoder-cn
-node bin/ars.mjs doctor --client qoder-cn
+node bin/ars.mjs resources
+node bin/ars.mjs select --client claude --skills shared-scientific-critical-thinking --mcp -
+node bin/ars.mjs plan --client claude
+node bin/ars.mjs apply --client claude
+node bin/ars.mjs doctor --client claude
 ```
 
-`npm.cmd` 避免依赖 PowerShell 的脚本执行策略。这里不要求管理员权限，不设置执行策略，不使用 `curl | sh`。第一次只试点一个 Skill；在客户端新开任务，确认技能被实际发现并能加载正文。
+`npm.cmd` avoids depending on PowerShell's script execution policy. Nothing here needs an elevated shell or a `curl | sh` install.
 
-客户端名可用 `node bin/ars.mjs clients` 查看。多个客户端时分别选择、预览和发布；不要把整份原生配置替换为别人的配置。
+`plan` shows the complete change set before anything is written:
 
-## 启用一个 MCP
+```json
+{
+  "ok": true,
+  "changes": 1,
+  "entries": [
+    {"client": "claude", "resource": "shared-scientific-critical-thinking", "action": "copy"}
+  ],
+  "scope": "Files only; no server, account or model calls"
+}
+```
 
-可选运行时与管理器依赖分开安装。安装前自行规划缓存、浏览器等大文件的位置。
+Replace `claude` with any id from `node bin/ars.mjs clients`. Repeat `select`, `plan`, `apply`, and `doctor` for each client — never paste another user's entire native config. For a multi-client walkthrough, see [the 5-minute quickstart](docs/quickstart.md).
+
+> Claude Code uses **user scope only** (`~/.claude.json` and `~/.claude/skills`). Project-level `.mcp.json` and permission settings are not read or modified. The adapter follows the official paths; please [report your client version](https://github.com/Zhi-Chao-PAN/agent-shared-resources/issues/new?template=client_compatibility.yml) after a real discovery check.
+
+### Add an MCP (optional)
+
+MCP runtimes have their own lockfile and are installed separately. Do this only for the servers you selected:
 
 ```sh
 cd runtimes
 npm ci --ignore-scripts
 cd ..
-node bin/ars.mjs select --client qoder-cn --mcp shared-context7
-node bin/ars.mjs plan --client qoder-cn
-node bin/ars.mjs apply --client qoder-cn
+node bin/ars.mjs select --client claude --mcp shared-context7
+node bin/ars.mjs plan --client claude
+node bin/ars.mjs apply --client claude
 ```
 
-Windows 将上面的 `npm` 写成 `npm.cmd`。运行时依赖有单独锁文件；没有后台下载或安装钩子。Context7 可先做一次 React 库解析来验收。`doctor` 通过只表示文件与声明一致，**不表示模型已经调用成功**。
+On Windows, use `npm.cmd`. `doctor` checks the native declaration; it does not start the server, complete OAuth, or prove that a model called a tool. Verify that separately with one minimal read-only request.
 
-可选连接：Notion、Linear、GitHub、Context7、Exa、Playwright、Serena。自己的账号自己授权，不上传或复制他人的 token；GitHub / Serena / Playwright 另有前置依赖，见 [MCP 配置](docs/mcp.md)。原生工具、Skills 与 CLI 各有作用，不必一股脑全部启用。
+## Supported clients
 
-## 本地配置
+Eleven file-format adapters are covered by the test matrix. All clients start disabled.
 
-`init` 创建被 Git 忽略的 `agent-resources.local.json`。`select` 只改这份清单，`apply` 才改客户端入口。例如：
+| Client | id | MCP entry | Skills |
+|---|---|---|---|
+| Claude Code | `claude` | `~/.claude.json` → `mcpServers` | `~/.claude/skills` |
+| Codex | `codex` | `~/.codex/config.toml` | `~/.codex/skills` |
+| Qoder CN | `qoder-cn` | `~/.qoder-cn/settings.json` | `~/.qoder-cn/skills` |
+| Qoder | `qoder` | `~/.qoder/settings.json` | `~/.qoder/skills` |
+| Gemini CLI | `gemini` | `~/.gemini/settings.json` | `~/.gemini/skills` |
+| WorkBuddy | `workbuddy` | `~/.workbuddy/mcp.json` | `~/.workbuddy/skills` |
+| MiniMax | `minimax` | `~/.minimax/mcp.json` | explicit source required |
+| Trae CN | `trae-cn` | `~/Library/Application Support/Trae CN/User/mcp.json` | `~/.trae-cn/skills` |
+| Antigravity | `antigravity` | `~/.gemini/config/mcp_config.json` | `~/.gemini/config/skills` |
+| DSH | `dsh` | `~/.dsh/profiles/desktop/cordis.patch.yml` | explicit root required |
+| ZCode | `zcode` | `~/.zcode/cli/config.json` → `mcp.servers` | explicit root required |
+
+These are **file-format defaults, not a promise that every version discovers them**. Windows paths for undocumented clients must be confirmed and set locally; the tool refuses to guess. See [compatibility and discovery](docs/compatibility.md).
+
+## What is in the library
+
+Four reviewed third-party Skills ship with their original licenses, pinned sources, and content hashes:
+
+| Skill | Use it for |
+|---|---|
+| `shared-scientific-critical-thinking` | Evidence quality, experimental design, bias, and statistical interpretation |
+| `shared-security-best-practices` | Language/framework security reviews (Python, JS/TS, Go) |
+| `shared-mcp-builder` | Designing and evaluating MCP servers in Python or Node/TypeScript |
+| `shared-frontend-design` | Distinctive UI direction, typography, and non-generic visual choices |
+
+Seven optional MCP definitions:
+
+| Resource | Authentication |
+|---|---|
+| `shared-notion`, `shared-linear` | Official hosted MCP; each user completes their own OAuth |
+| `shared-context7`, `shared-exa` | Public endpoint with provider quotas; no limit bypass |
+| `shared-github` | Your own `gh` login; token stays in the child process environment |
+| `shared-playwright` | Optional isolated headless browser; not your everyday profile |
+| `shared-serena` | Optional project tooling via `uvx`; no automatic indexing |
+
+Run `node bin/ars.mjs resources` for descriptions and sources. MCP runtimes are installed separately in `runtimes/`; see [MCP setup](docs/mcp.md).
+
+### Add your own reviewed Skill
+
+Register a local source in `agent-resources.local.json`. Relative paths resolve from this repository; `${root}`, `${home}`, and `${node}` are supported. The `name` in `SKILL.md` must match the registered name.
+
+```json
+"skills": {
+  "my-skill": "${home}/reviewed-skills/my-skill"
+}
+```
+
+## One local manifest
+
+`init` creates the Git-ignored `agent-resources.local.json`. `select` changes only this manifest; `apply` changes client files.
 
 ```json
 {
   "version": 1,
   "clients": {
-    "qoder-cn": {
+    "claude": {
       "skills": ["shared-scientific-critical-thinking"],
       "mcp": ["shared-context7"]
+    },
+    "codex": {
+      "skills": ["shared-scientific-critical-thinking"],
+      "mcp": []
     }
   },
   "skills": {},
@@ -98,45 +192,52 @@ Windows 将上面的 `npm` 写成 `npm.cmd`。运行时依赖有单独锁文件�
 }
 ```
 
-资源列表使用逗号分隔；`-` 表示空列表。未提供的 `--skills` 或 `--mcp` 保持原选择。清空选择**不会自动卸载**已发布资源，要用明确的回滚命令。
+Lists are comma-separated on the command line; `-` clears a list. Omitting `--skills` or `--mcp` keeps the previous selection. **Clearing a selection does not uninstall anything** — use `rollback`.
 
-自有或已审查的本地 Skill，可在 `skills` 中登记 `名称: 路径`。相对路径以本仓库为准；支持 `${root}`、`${home}` 和 `${node}` 占位符。`SKILL.md` 的 `name` 必须与登记名相同。
+Custom stdio servers accept only `command` and `args`. Keep credentials in the official login state, system environment, or keychain; never in the shared manifest.
 
-```json
-"skills": {
-  "my-skill": "${home}/my-reviewed-skills/my-skill"
-}
-```
-
-可复用已有的 [飞书官方 CLI / Skills](https://github.com/larksuite/cli)，由使用者按官方指引安装并自行授权，再登记已安装的本地技能源。本仓库不附带个人飞书桥接、账号、通信目标或旧会议别名。自定义 stdio MCP 只接受 `command` / `args`；凭据放在官方登录态、系统环境或密钥存储，不放进共享清单。
-
-## 回滚与更新
+## Update, rollback, recover
 
 ```sh
-node bin/ars.mjs rollback --client qoder-cn --resource shared-context7
-node bin/ars.mjs rollback --client qoder-cn --resource shared-scientific-critical-thinking
+node bin/ars.mjs rollback --client claude --resource shared-context7
+node bin/ars.mjs rollback --client claude --resource shared-scientific-critical-thinking
+node bin/ars.mjs rollback --resource shared-scientific-critical-thinking
 node bin/ars.mjs recover
 ```
 
-回滚按回执只移除本工具创建、且仍与发布版本一致的入口，保留其他设置和后来新增的私有条目。备份与事务保存在当前用户的 `~/.agent-shared-resources/`，不在仓库里。回滚 Skill 的副本会移入该目录的备份区，原技能源不动。
+To change a published Skill's content or an MCP launch command, roll back that resource first, then `apply` the new version. The tool will not overwrite a copy that you have edited.
 
-首版要求在更换已发布的资源内容 / 启动参数之前先执行该资源的回滚，再发布新版本；不会自动覆盖用户修改过的副本。中断事务必须先 `recover`；并发编辑、来源变化或不完整暂存目录会停止恢复，详见 [恢复说明](docs/design.md)。
+- Rollback removes only entries created by this tool that still match the published content.
+- Identical resources that already existed are never claimed or removed.
+- Backups, receipts, pending transactions, and OAuth caches live in `~/.agent-shared-resources/`, outside the repository.
+- A pending transaction blocks new publishes until `recover`; recovery stops if a native file was edited concurrently.
 
-## 兼容与验收边界
+## Safety boundaries
 
-已提供 10 个客户端的文件格式适配器。Qoder / Qoder CN、Codex、Gemini 使用文档中的用户目录入口；WorkBuddy、MiniMax、Trae CN、Antigravity、DSH、ZCode 的 Windows 路径必须由使用者明确确认后覆盖。MiniMax、DSH、ZCode 的 Skill 发现路径也必须显式填写，避免把文件放到一个不会被读取的目录。
+What this tool deliberately does **not** do:
 
-Qoder 等客户端可能同时扫描 `~/.agents/skills`。扩展页显示的本地数量不一定等于模型实际可见数量。可用 Qoder 的原生 `hiddenSkills` 选择性隐藏本机旧入口，不删除公共目录；其他客户端的发现机制见 [兼容矩阵](docs/compatibility.md)。
+- log in to any account, store provider tokens in the manifest, or share credentials between users;
+- change models, plugins, global Agent instructions, approval rules, or sandbox settings;
+- replace a whole native config file or restore a backup over newer private edits;
+- start MCP servers during `apply`, or run Skill scripts;
+- sync chats, memories, or accounts between clients;
+- guarantee that a model will choose a particular tool, or sandbox custom commands.
 
-原参考系统在 Mac 上验证过多个客户端的真实调用，但这些个人日志和账号信息不会公开。本仓库新 CLI 的自动化测试、公开运行时检查与参考系统实机经验分别记录在 [验证范围](docs/validation.md)。Windows CI 不等于 Windows 桌面客户端和官方登录都已逐端验证。
+`doctor` proves the files and declarations match. It cannot prove that your client version reads that path or that a model actually calls the tool. After publishing, open a **new** client task and verify: the Skill is discovered, its body loads, and one minimal read-only MCP call succeeds. No business data is needed for acceptance.
 
-## 开发与来源
+## Development
 
 ```sh
 npm test
-npm run check:publication
+npm run check
 ```
 
-CI 在 macOS / Windows / Linux、Node 22 / 24 运行测试，不访问你的账号，不启动私有服务。发布检查扫描当前跟踪文件与提交历史中的常见凭据、本机路径和不应发布的文件。它不是完整安全审计。
+CI runs the tests on macOS, Windows, and Linux with Node.js 22 and 24. It never touches a real home directory, an account, or a private service. The publication check scans tracked files and Git history for common credential patterns, machine paths, and files that should not be published; it is a guardrail, not a complete security audit.
 
-自研管理器与文档采用 [MIT](LICENSE)。收录的四个第三方专项 Skills 保留原许可证、固定来源及内容哈希，见 [第三方声明](THIRD_PARTY_NOTICES.md) 与 [来源清单](catalog/skills.json)。MCP、CLI 和可选运行时遵循各自的许可证，本仓库不把它们重新授权为 MIT。
+Client compatibility reports are especially welcome — they are how the honest support matrix grows. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [compatibility report form](https://github.com/Zhi-Chao-PAN/agent-shared-resources/issues/new?template=client_compatibility.yml).
+
+If this saves you from hand-merging one more agent config, **a star helps the next person find it.**
+
+## License
+
+The manager and documentation are [MIT](LICENSE). Bundled third-party Skills retain their original licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [source catalog](catalog/skills.json). MCP servers, CLIs, and optional runtimes keep their own licenses.

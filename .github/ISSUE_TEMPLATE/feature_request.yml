@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest a client adapter, a safer workflow, or a documentation improvement.
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This project deliberately stays small: no account sharing, no global Agent rules, no forced tool routing, no silent overwrites. Proposals that preserve those boundaries are easiest to accept.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you unable to do today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Relevant client or OS (if any)
+      placeholder: Claude Code / Codex / Windows 11
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Symlinks, dotfiles, a copy script, native client settings, or an existing MCP?
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Design boundaries
+      options:
+        - label: The proposal can work without storing credentials in the shared manifest.
+          required: true
+        - label: The proposal does not require replacing an entire native config file.
+          required: true
