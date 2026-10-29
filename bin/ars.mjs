@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {Manager,CONFIG,nameOK} from '../src/manager.mjs';
 import {CLIENTS} from '../src/clients.mjs';
 import {atomic} from '../src/files.mjs';
+import {runTrial} from '../src/trial.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
@@ -20,6 +21,7 @@ try {
   if(command==='help'||command==='--help') {
     console.log(`agent-shared-resources ${pkg.version}
 
+node bin/ars.mjs trial
 node bin/ars.mjs init
 node bin/ars.mjs resources
 node bin/ars.mjs select --client <id> [--skills a,b|-] [--mcp c,d|-]
@@ -31,6 +33,10 @@ node bin/ars.mjs clients
 
 init/select edit only the ignored local manifest. apply/rollback change native files.
 No automatic account login, approval changes, global rules, or MCP execution.`);
+  } else if(command==='trial') {
+    if(Object.keys(flags).length)throw new Error('trial accepts no flags; it always uses disposable fixtures');
+    const result={version:pkg.version,...runTrial()};
+    console.log(JSON.stringify(result,null,2));if(!result.ok)process.exitCode=1;
   } else if(command==='--version'||command==='version')console.log(pkg.version);
   else if(command==='clients')console.log(JSON.stringify(CLIENTS,null,2));
   else if(command==='resources') {

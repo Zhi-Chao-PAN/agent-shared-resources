@@ -1,5 +1,7 @@
 # Five-minute quickstart: three agents, one library
 
+Before changing a real client, run `node bin/ars.mjs trial` after installing dependencies. See [First trial / 首次试用](trial.md) for isolation boundaries and feedback.
+
 This walkthrough publishes one Skill to Claude Code and Codex, and one Skill plus Context7 to Qoder CN. Every command is explicit, and every client remains independently configurable.
 
 If you only use one client, stop after its section — the workflow is the same.

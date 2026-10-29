@@ -27,6 +27,8 @@ body:
       label: What did you test?
       multiple: true
       options:
+        - Isolated trial completed (not a real client check)
+        - File-only plan/apply/doctor completed
         - Skill discovered in a new task
         - Skill body actually loaded
         - MCP server visible in settings

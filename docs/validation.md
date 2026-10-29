@@ -16,3 +16,7 @@
 Windows 的 CI 可以验证真实 Windows 文件行为，包括 junction 与复制发布；它不能证明某个 Windows Agent 实际读取了相同目录，也不能证明官方 OAuth 和每个工具均可调用。需要用户按具体客户端做一次小规模只读验收后再扩大部署。
 
 贡献实机结果时可报告 OS / 架构、客户端版本、脱敏的路径形式、原生发现数量、实际工具名、成功/错误状态及保留检查；不要上传完整设置、日志、账号标识或 token。
+
+## Isolated first trial
+
+`node bin/ars.mjs trial` runs eight real-manager checks against temporary fixtures, including conflict refusal and recovery. `npm test` also verifies that it leaves the repository manifest and real publication receipt unchanged and rejects a home override. CI runs this coverage on each OS/Node combination. This does not verify actual client discovery or model invocation.
