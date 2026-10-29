@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add an isolated `trial` command that exercises the real publisher, conflict refusal, rollback and recovery without touching a client home or invoking models.
+- Add bilingual first-trial guidance and a shareable report with no paths or configuration content.
+- Separate file checks from actual client discovery in compatibility feedback.
+
 ## 0.1.0 — 2026-10-18
 
 Initial public release.

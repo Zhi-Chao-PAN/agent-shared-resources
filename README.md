@@ -17,6 +17,10 @@ If you use Claude Code, Codex, Gemini CLI, Qoder, Trae CN, or another coding age
 
 This tool keeps **one reviewed source library** and publishes only the resources you select to each client's native location. It edits the target entry instead of replacing the whole config. Nothing is enabled by default.
 
+## Try safely before connecting a client
+
+Run `npm ci --ignore-scripts`, then `node bin/ars.mjs trial`. The real manager exercises preview, publish, conflicts, rollback and recovery inside disposable fixtures; it does not touch your client files or call a model. Review the eight-check JSON report, then follow the [first trial guide](docs/trial.md) before choosing a real client. On Windows use `npm.cmd ci --ignore-scripts`.
+
 ## What it does
 
 - **One library, many agents.** Select Skills and MCP servers per client from a single local manifest.
